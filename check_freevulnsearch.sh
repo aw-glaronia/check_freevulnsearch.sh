@@ -19,7 +19,7 @@ if [ -z "$HOST" ];
 	fi
 
 #Store NMAP-Output as Variable
-NMAP=$(nmap -sV --script freevulnsearch $HOST)
+NMAP=$(nmap -sV -Pn --script freevulnsearch $HOST)
 
 #Filter and count CVE- Lines
 CVE=$(echo "$NMAP" | grep "CVE-")
