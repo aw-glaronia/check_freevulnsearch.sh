@@ -2,7 +2,7 @@
 ####
 #	Author:		Andreas Walker <a.walker@glaronia.ch>
 #	Date:		27-Apr-2019
-#	Version:	0.0.1
+#	Version:	0.0.2
 #	License:	GPL
 ####
 
@@ -24,7 +24,8 @@ NMAP=$(nmap -sV -Pn --script freevulnsearch $HOST)
 #Filter and count CVE- Lines
 CVE=$(echo "$NMAP" | grep "CVE-")
 VULN=$(echo "$NMAP" | grep -c "CVE-")
-CRIT=$(echo "$NMAP" | grep -c "Critical")
+CRIT=$(MED=$(echo "$NMAP" | grep -c "Medium")echo "$NMAP" | grep -c "Critical")
+HIG=$(echo "$NMAP" | grep -c "High")
 MED=$(echo "$NMAP" | grep -c "Medium")
 LOW=$(echo "$NMAP" | grep -c "Low")
 
@@ -42,7 +43,7 @@ if [[ "$LEVEL" == "f" ]];
 #Return OK if no vulnerabilities found.
 if [ $VULN == 0 ];
 	then
-echo "OK - No vulnerabilities found | critical=$CRIT;;1 medium=$MED;1;30 low=$LOW;1;50"
+echo "OK - No vulnerabilities found | critical=$CRIT;;1 critical=$HIG;;1 medium=$MED;1;30 low=$LOW;1;50"
 	echo "$DIAG"
  	exit 0 
 fi
@@ -50,23 +51,33 @@ fi
 #Return Critical if Critical vulnerabilities found.
 if [ $CRIT != 0 ];
 	then
-	echo "CRITICAL - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 medium=$MED;1;30 low=$LOW;1;50"
-	echo "$CRIT Critical / $MED Medium / $LOW low"
+	echo "CRITICAL - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 critical=$HIG;;1 medium=$MED;1;30 low=$LOW;1;50"
+	echo "$CRIT Critical / $HIG High / $MED Medium / $LOW low"
        	echo "$DIAG"
 	exit 2
 fi
+
+#Return Critical if High vulnerabilities found.
+if [ $HIG != 0 ];
+	then
+	echo "CRITICAL - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 critical=$HIG;;1 medium=$MED;1;30 low=$LOW;1;50"
+	echo "$CRIT Critical / $HIG High / $MED Medium / $LOW low"
+       	echo "$DIAG"
+	exit 2
+fi
+
 #Return Warning if Medium vulnerabilities found.
 if [ $MED != 0 ];
-then echo "WARNING - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 medium=$MED;1;30 low=$LOW;1;50"
-	echo "$CRIT Critical / $MED Medium / $LOW low"
+then echo "WARNING - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 critical=$HIG;;1 medium=$MED;1;30 low=$LOW;1;50"
+	echo "$CRIT Critical / $HIG High / $MED Medium / $LOW low"
         echo "$DIAG"
 	exit 1
 fi
 
 #Return Warning if Low vulnerabilities found.
 if [ $LOW != 0 ];
-	then echo "WARNING - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 medium=$MED;1;30 low=$LOW;1;50"
-	echo "$CRIT Critical / $MED Medium / $LOW low"
+	then echo "WARNING - $HOST: $VULN vulnerabilities found | critical=$CRIT;;1 critical=$HIG;;1 medium=$MED;1;30 low=$LOW;1;50"
+	echo "$CRIT Critical / $HIG High / $MED Medium / $LOW low"
         echo "$DIAG"
 	exit 1
 fi
