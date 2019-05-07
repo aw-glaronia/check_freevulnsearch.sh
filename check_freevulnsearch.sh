@@ -24,7 +24,7 @@ NMAP=$(nmap -sV -Pn --script freevulnsearch $HOST)
 #Filter and count CVE- Lines
 CVE=$(echo "$NMAP" | grep "CVE-")
 VULN=$(echo "$NMAP" | grep -c "CVE-")
-CRIT=$(MED=$(echo "$NMAP" | grep -c "Medium")echo "$NMAP" | grep -c "Critical")
+CRIT=$(echo "$NMAP" | grep -c "Critical")
 HIG=$(echo "$NMAP" | grep -c "High")
 MED=$(echo "$NMAP" | grep -c "Medium")
 LOW=$(echo "$NMAP" | grep -c "Low")
