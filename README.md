@@ -1,5 +1,5 @@
 # check_freevulnsearch.sh
-Shell-Script for Nagios, that uses NMAP and https://github.com/OCSAF/freevulnsearch to find vulnerabilities.
+Shell-Script for Nagios, that uses NMAP and https://github.com/OCSAF/freevulnsearch to find vulnerabilities. Provides Performance-Data to Nagios.
 
 Some parameters may must be changed in the script itself.
 
